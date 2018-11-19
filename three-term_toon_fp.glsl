@@ -23,7 +23,7 @@ void main()
          L, // Light-source direction
          V, // View direction
          H; // Half-way vector
-	for(int i = 0; i < light_pos.length; i++){
+	for(int i = 0; i < 2; i++){
     // Compute Lambertian lighting Id
     N = normalize(normal_interp);
 

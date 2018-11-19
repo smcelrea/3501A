@@ -79,7 +79,7 @@ void main()
 	vec3 mfacet = (fresnel*geom*ndist) / (4.0 * dot(N,L) * dot(N,V));
 
     // Full illumination
-    vec3 illum = ambient_color/light_pos.length + (diffuse + mfacet/4.0)*light_intensity*NL;
+    vec3 illum = ambient_color/1 + (diffuse + mfacet/4.0)*light_intensity*NL;
 
     // Assign illumination to the fragment
     gl_FragColor = gl_FragColor + vec4(illum, 1.0);

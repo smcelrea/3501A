@@ -32,7 +32,7 @@ void main()
          L, // Light-source direction
          V, // View direction
          H; // Half-way vector
-	for(int i = 0; i < light_pos.length; i++){
+	for(int i = 0; i < 2; i++){
 
     // Compute Lambertian lighting Id
     N = normalize(normal_interp);
@@ -55,7 +55,7 @@ void main()
     float Is = pow(spec_angle_cos, phong_exponent);
         
     // Assign light to the fragment
-    gl_FragColor = gl_FragColor + pixel*(ambient_color/light_pos.length + Id*diffuse_color + Is*specular_color);
+    gl_FragColor = gl_FragColor + pixel*(ambient_color/2 + Id*diffuse_color + Is*specular_color);
 	}
                     
     // For debug, we can display the different values
