@@ -48,6 +48,47 @@ SceneNode::SceneNode(const std::string name, const Resource *geometry, const Res
 	side_ = glm::vec3(1.0, 0.0, 0.0);
 }
 
+SceneNode::SceneNode(const SceneNode &nodeCpy) {
+	// Set name of scene node
+	name_ = nodeCpy.name_;
+
+	// Set geometry
+	if (nodeCpy.mode_ == PointSet) {
+		mode_ = GL_POINTS;
+	}
+	else if (nodeCpy.mode_ == Mesh) {
+		mode_ = GL_TRIANGLES;
+	}
+	else {
+		throw(std::invalid_argument(std::string("Invalid type of geometry")));
+	}
+
+	array_buffer_ = nodeCpy.array_buffer_;
+	element_array_buffer_ = nodeCpy.element_array_buffer_;
+	size_ = nodeCpy.size_;
+
+	// Set material (shader program)
+	if (nodeCpy.material_ != Material) {
+		throw(std::invalid_argument(std::string("Invalid type of material")));
+	}
+
+	material_ = nodeCpy.material_;
+
+	// Set texture
+	if (nodeCpy.texture_) {
+		texture_ = nodeCpy.texture_;
+	}
+	else {
+		texture_ = 0;
+	}
+
+	// Other attributes
+	scale_ = glm::vec3(1.0, 1.0, 1.0);
+	parent_ = NULL;
+	forward_ = glm::vec3(0.0, 0.0, 1.0);
+	side_ = glm::vec3(1.0, 0.0, 0.0);
+}
+
 
 SceneNode::~SceneNode(){
 }

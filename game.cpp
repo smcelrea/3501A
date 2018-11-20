@@ -11,7 +11,7 @@ namespace game {
 // They are written here as global variables, but ideally they should be loaded from a configuration file
 
 // Main window settings
-const std::string window_title_g = "Demo";
+const std::string window_title_g = "Project";
 const unsigned int window_width_g = 800;
 const unsigned int window_height_g = 600;
 const bool window_full_screen_g = false;
@@ -44,7 +44,7 @@ void Game::Init(void){
 
     // Set variables
     animating_ = true;
-	std::string keymap[] = { "w", "a", "s", "d", " ", "lshift", "lctrl" };
+	std::string keymap[] = { "w", "a", "s", "d", " ", "lshift", "lctrl" , "left", "right"};
 	for (int i = 0; i < sizeof(keymap) / sizeof(*keymap); i++) {
 		keys.insert(std::pair<std::string, bool> (keymap[i], false));
 	}
@@ -168,11 +168,12 @@ void Game::SetupScene(void){
 
     // Create a turret
 	// base
-    game::SceneNode *chopperbase = CreateInstance("HelicopterBase", "CylinderMesh", "3TTexturedMaterial", "Crumpled");
+	game::Helicopter *chopperbase = CreateHelicopter("HelicopterBase", "CylinderMesh", "3TTexturedMaterial", "Crumpled");
     // Adjust the instance
 	chopperbase->Translate(glm::vec3(1.4, 2.0, 0.0));
 	chopperbase->Rotate(glm::angleAxis(-glm::pi<float>() / 180.0f * 90.0f, glm::vec3(1.0, 0.0, 0.0)));
     chopperbase->Scale(glm::vec3(0.5, 0.7, 0.5));
+	player_ = chopperbase;
 
 	// rotating base
 	game::SceneNode *gunbase = CreateInstance("CylinderInstance2", "CylinderMesh", "3TTexturedMaterial", "Crumpled");
@@ -185,6 +186,7 @@ void Game::SetupScene(void){
 	game::SceneNode *gunback = CreateInstance("CylinderInstance3", "CylinderMesh", "3TTexturedMaterial", "Crumpled");
 	// Adjust the instance
 	gunback->Scale(glm::vec3(0.1, 0.5, 0.1));
+	gunback->SetOrbit(glm::vec3(0.0, 0.5, 0.0));
 
 	// second part of gun
 	game::SceneNode *gunfront = CreateInstance("CylinderInstance4", "CylinderMesh", "3TTexturedMaterial", "Space");
@@ -199,6 +201,8 @@ void Game::SetupScene(void){
 	// Adjust the instance
 	plane->Scale(glm::vec3(50.0, 50.0, 50.0));
 	plane->Rotate(glm::angleAxis(glm::pi<float>() / 180.0f * 90.0f, glm::vec3(1.0, 0.0, 0.0)));
+
+	
 }
 
 
@@ -217,26 +221,35 @@ void Game::MainLoop(void){
                 // Animate the cube
 
                 // Animate the turret
-				SceneNode *node = scene_.GetNode("HelicopterBase");
+				
 				if (keys.at("w")) {
-					node->Translate(node->GetUp());
+					player_->ApplyAngForce(glm::vec3(-0.01, 0, 0));
 				} else
 				if (keys.at("s")) {
-					node->Translate(-node->GetUp());
+					player_->ApplyAngForce(glm::vec3(0.01, 0, 0));
 				}
 				if (keys.at("a")) {
-					node->Translate(-node->GetSide());
+					player_->ApplyAngForce(glm::vec3(0, 0, -0.001));
 				} else
 				if (keys.at("d")) {
-					node->Translate(node->GetSide());
+					player_->ApplyAngForce(glm::vec3(0, 0, 0.001));
+				}
+				if (keys.at("left")) {
+					player_->ApplyAngForce(glm::vec3(0, -0.01, 0));
+				}
+				else
+				if (keys.at("right")) {
+					player_->ApplyAngForce(glm::vec3(0, 0.01, 0));
 				}
 				if (keys.at(" ")) {
-					node->Translate(node->GetForward());
+					player_->ApplyForce(player_->GetForward()*(-0.001f));
 				} else
 				if (keys.at("lshift")) {
-					node->Translate(-node->GetForward());
+					player_->ApplyForce(player_->GetForward()*(0.001f));
 				}
-				camera_.SetPosition(node->GetPosition() - camera_.GetForward()*10.0f);
+				SceneNode *node = scene_.GetNode("HelicopterBase");
+				camera_.SetPosition(node->GetPosition() - node->GetUp()*5.0f - node->GetForward()*1.0f); //
+				camera_.SetView(camera_.GetPosition(), node->GetPosition(), glm::vec3(0.0, 1.0, 0.0));
 
                 node = scene_.GetNode("CylinderInstance2");
 				glm::quat rotation = glm::angleAxis(glm::pi<float>() / 180.0f / 2.0f, glm::vec3(0.0, 1.0, 0.0));
@@ -245,7 +258,7 @@ void Game::MainLoop(void){
 
 				node = scene_.GetNode("CylinderInstance3");
 				node->SetOrientation(glm::angleAxis(glm::pi<float>() / 180.0f * (90.0f + (float)cos(glfwGetTime()*5.0f)*20.0f), glm::vec3(0.0, 0.0, 1.0)));
-				node->SetOrbit(glm::vec3(0.0, 0.5, 0.0));
+				
 
 				node = scene_.GetNode("CylinderInstance4");
 				node->SetPosition(glm::vec3(0.0, 0.25 + sin(glfwGetTime()*20.0f)*0.125, 0.0));
@@ -299,10 +312,10 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
 			game->camera_.Pitch(-rot_factor);
 		}
 		if (key == GLFW_KEY_LEFT) {
-			game->camera_.Yaw(rot_factor);
+			game->keys.at("left") = true;
 		}
 		if (key == GLFW_KEY_RIGHT) {
-			game->camera_.Yaw(-rot_factor);
+			game->keys.at("right") = true;
 		}
 		if (key == GLFW_KEY_W) {
 			game->keys.at("w") = true;
@@ -347,6 +360,12 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
 		}
 		if (key == GLFW_KEY_LEFT_SHIFT) {
 			game->keys.at("lshift") = false;
+		}
+		if (key == GLFW_KEY_LEFT) {
+			game->keys.at("left") = false;
+		}
+		if (key == GLFW_KEY_RIGHT) {
+			game->keys.at("right") = false;
 		}
 	}
 	if (key == GLFW_KEY_R && action == GLFW_PRESS) {
@@ -448,6 +467,31 @@ SceneNode *Game::CreateInstance(std::string entity_name, std::string object_name
 
     SceneNode *scn = scene_.CreateNode(entity_name, geom, mat, tex);
     return scn;
+}
+
+Helicopter *Game::CreateHelicopter(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name) {
+
+	Resource *geom = resman_.GetResource(object_name);
+	if (!geom) {
+		throw(GameException(std::string("Could not find resource \"") + object_name + std::string("\"")));
+	}
+
+	Resource *mat = resman_.GetResource(material_name);
+	if (!mat) {
+		throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
+	}
+
+	Resource *tex = NULL;
+	if (texture_name != "") {
+		tex = resman_.GetResource(texture_name);
+		if (!mat) {
+			throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
+		}
+	}
+
+	Helicopter *scn = new Helicopter(entity_name, geom, mat, tex);
+	scene_.AddNode(scn);
+	return scn;
 }
 
 } // namespace game

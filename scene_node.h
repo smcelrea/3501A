@@ -3,6 +3,8 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
+#include <map>
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -21,7 +23,7 @@ namespace game {
         public:
             // Create scene node from given resources
             SceneNode(const std::string name, const Resource *geometry, const Resource *material, const Resource *texture = NULL);
-
+			SceneNode(const SceneNode &nodeCpy);
             // Destructor
             ~SceneNode();
             
@@ -76,21 +78,24 @@ namespace game {
             GLsizei GetSize(void) const;
             GLuint GetMaterial(void) const;
 
-        private:
-            std::string name_; // Name of the scene node
-            GLuint array_buffer_; // References to geometry: vertex and array buffers
-            GLuint element_array_buffer_;
-            GLenum mode_; // Type of geometry
-            GLsizei size_; // Number of primitives in geometry
-            GLuint material_; // Reference to shader program
-            GLuint texture_; // Reference to texture resource
+		protected:
+			std::string name_; // Name of the scene node
+			GLuint material_; // Reference to shader program
+			GLuint texture_; // Reference to texture resource
+			GLenum mode_; // Type of geometry
+			GLuint array_buffer_; // References to geometry: vertex and array buffers
+			GLuint element_array_buffer_;
+			GLsizei size_; // Number of primitives in geometry
 			glm::vec3 forward_; // Initial forward vector
 			glm::vec3 side_; // Initial side vector
-            glm::vec3 position_; // Position of node
-            glm::quat orientation_; // Orientation of node
+			glm::vec3 position_; // Position of node
+			glm::quat orientation_; // Orientation of node
 			glm::vec3 orbit_; // Orbital offset of node
-            glm::vec3 scale_; // Scale of node
+			glm::vec3 scale_; // Scale of node
 			SceneNode *parent_;
+
+        private:
+			
 			// Scene nodes to render
 			std::vector<SceneNode *> node_;
 

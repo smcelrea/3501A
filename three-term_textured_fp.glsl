@@ -25,6 +25,7 @@ void main()
 {
 	// Retrieve texture value
     vec4 pixel = texture(texture_map, uv_interp);
+	gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
 
     // Blinn-Phong shading
 
@@ -55,7 +56,7 @@ void main()
     float Is = pow(spec_angle_cos, phong_exponent);
         
     // Assign light to the fragment
-    gl_FragColor = gl_FragColor + pixel*(ambient_color/2 + Id*diffuse_color + Is*specular_color);
+    gl_FragColor += pixel*(ambient_color/2 + Id*diffuse_color + Is*specular_color);
 	}
                     
     // For debug, we can display the different values
