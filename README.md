@@ -12,3 +12,17 @@
 <br>Space: Fly up
 <br>V: Toggle First/Thirdperson
 <br>Up arrow: Fire
+
+<br>Resources:
+<br>
+<br>	Crumpled:
+<br>	https://freestocktextures.com/texture/shiny-silver-metallic-paper,1038.html
+<br>
+<br>	Skybox:
+<br>	https://tf2maps.net/threads/sky_sunset_04-sky_iron_04.23416/
+<br>
+<br>	Cockpit:
+<br>	http://www.aljanh.net/the-cockpit-of-a-spaceship-wallpapers/3634880787.html
+<br>
+<br>	Tower:
+<br>	https://opengameart.org/content/mage-tower
