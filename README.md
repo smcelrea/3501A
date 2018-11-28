@@ -1,7 +1,10 @@
 # 3501A
-
+<br>
+<br> SLIDESHOW LINK
+<br> https://docs.google.com/presentation/d/14h-e3RMwC6b8MTnKpYrO2UwFr18EM5bdJcPDbqQPNDE/edit?usp=sharing
+<br>
 <br>Controls:
-
+<br>
 <br>W: Tilt and move forward
 <br>S: Tilt and move backward
 <br>A: Turn left
@@ -12,7 +15,7 @@
 <br>Space: Fly up
 <br>V: Toggle First/Thirdperson
 <br>Up arrow: Fire
-
+<br>
 <br>Resources:
 <br>
 <br>	Crumpled:
