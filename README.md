@@ -10,4 +10,5 @@
 <br>Right Arrow: Roll Right
 <br>Shift: Fly down
 <br>Space: Fly up
-<br>V: Fire Weapon
+<br>V: Toggle First/Thirdperson
+<br>Up arrow: Fire
